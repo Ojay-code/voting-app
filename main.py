@@ -3,11 +3,23 @@ import time
 import tkinter as tk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-
+import sqlite3 as sl
 
 # Setting default theme and appearance mode
 ctk.set_default_color_theme("green") 
 ctk.set_appearance_mode('dark')
+
+#create database
+def create_database(vin, user_choice):
+        con = sl.connect('Presidential.db')
+        c = con.cursor()
+        
+        c.execute('CREATE TABLE IF NOT EXISTS presidential(vin text, choice text)')
+        
+        c.execute('INSERT INTO presidential(vin, choice) VALUES(?,?)',(vin, user_choice))
+        
+        con.commit()
+        con.close()
 
 #create frame label
 def label ():
@@ -72,36 +84,60 @@ def component_widget_1():
         lbl_2 = ctk.CTkLabel(master=frame1, text="PRESIDENTIAL PARTY", font=('Geometr415 Blk BT', 20))
         lbl_2.place(x=35, y=100)
 
-# defining our image and creating of buttons
-        # LP_Vote= ImageTk.PhotoImage(Image.open("LP.png").resize((60,60),Image.ANTIALIAS))
-        # butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote1", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda butt = '-':button_click(butt, butt_2, butt_3, butt_4))
-        # butt_1.place(x=90, y=140)
 
-        LP_Vote= ImageTk.PhotoImage(Image.open("LP.png").resize((60,60),Image.ANTIALIAS))
-        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote1", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : button_click(butt_1,butt_2,butt_3,butt_4))
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
+        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="LP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : button_click(butt_1,butt_2,butt_3,butt_4))
         butt_1.place(x=90, y=140)
         
-        PDP_Vote= ImageTk.PhotoImage(Image.open("PDP.png").resize((60,60),Image.ANTIALIAS))
-        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
+        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="PDP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open("APC.png").resize((60,60),Image.ANTIALIAS))
-        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
+        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="APC", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_3.place(x=90, y=260)
         
-        NNPP_Vote= ImageTk.PhotoImage(Image.open("nnpp.png").resize((60,60),Image.ANTIALIAS))
-        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.ANTIALIAS))
+        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="NNPP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_4.place(x=90, y=320)
 
+def disable(lp_btn, pdp_btn, apc_btn, nnpp_btn):
+        lp_btn.configure(state= tk.DISABLED)
+        pdp_btn.configure(state= tk.DISABLED)
+        apc_btn.configure(state= tk.DISABLED)
+        nnpp_btn.configure(state= tk.DISABLED)
 
-def button_click(a, b, c, d):
-#      if a == 'Vote1':
-#           a.configure(state="disabled")
-#           b.configure(state="disabled")
-#           c.configure(state="disabled")
-#           d.configure(state="disabled")
-    print('hey')
-    print(f"{a},{b},{c},{d}")
+def button_click(lp_btn, pdp_btn, apc_btn, nnpp_btn):
+        global entry_1
+        user_value = entry_1.get()
+        try:
+                vote_1 = lp_btn.cget("text")
+                vote_2 = pdp_btn.cget("text")
+                vote_3 = apc_btn.cget("text")
+                vote_4 = nnpp_btn.cget("text")
+                
+                if vote_1 == "LP":
+                        print(user_value)
+                        print(vote_1)
+                        create_database(user_value, vote_1)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_2 == "PDP":
+                        create_database(user_value, vote_2)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_3 == "APC":
+                        create_database(user_value, vote_3)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_4 == "NNPP":
+                        create_database(user_value, vote_4)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+                
+                
+        except SyntaxError as e:
+                messagebox.showerror("Error","There was an error")
+                print(e)
 
 
 
@@ -115,15 +151,15 @@ def component_widget_2():
         lbl_3.place(x=35, y=100)
 
 # defining our image and creating of buttons
-        LP_Vote= ImageTk.PhotoImage(Image.open("LP.png").resize((60,60),Image.ANTIALIAS))
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
         butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_1.place(x=90, y=140)
 
-        PDP_Vote= ImageTk.PhotoImage(Image.open("PDP.png").resize((60,60),Image.ANTIALIAS))
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
         butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open("APC.png").resize((60,60),Image.ANTIALIAS))
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
         butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_3.place(x=90, y=260)
         
@@ -140,19 +176,19 @@ def component_widget_3():
         lbl_4.place(x=52, y=80)
 
 # defining our image and creating of buttons
-        LP_Vote= ImageTk.PhotoImage(Image.open("LP.png").resize((60,60),Image.ANTIALIAS))
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
         butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_1.place(x=90, y=140)
 
-        PDP_Vote= ImageTk.PhotoImage(Image.open("PDP.png").resize((60,60),Image.ANTIALIAS))
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
         butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open("APC.png").resize((60,60),Image.ANTIALIAS))
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
         butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_3.place(x=90, y=260)
         
-        NNPP_Vote= ImageTk.PhotoImage(Image.open("nnpp.png").resize((60,60),Image.ANTIALIAS))
+        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.ANTIALIAS))
         butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
         butt_4.place(x=90, y=320)
 
@@ -161,11 +197,11 @@ def component_widget_3():
 if __name__=="__main__":
     root = ctk.CTk()
     root.geometry("300x500")
-    root.iconbitmap('String_logo.ico')
+    root.iconbitmap(r'C:\Users\Suleiman\Desktop\Strings\voting-app\String_logo.ico')
     root.resizable(0,0)
     root.title("The Strings Voting App")
     root.config(background="#000E0E")
-    img1 = ImageTk.PhotoImage(Image.open("pattern.png"))
+    img1 = ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\pattern.png"))
     label_1 = ctk.CTkLabel(master=root, image=img1)
     label_1.pack()
      
