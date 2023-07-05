@@ -9,14 +9,36 @@ import sqlite3 as sl
 ctk.set_default_color_theme("green") 
 ctk.set_appearance_mode('dark')
 
-#create database
-def create_database(vin, user_choice):
+#create databases
+def database_president(vin, user_choice):
         con = sl.connect('Presidential.db')
         c = con.cursor()
         
         c.execute('CREATE TABLE IF NOT EXISTS presidential(vin text, choice text)')
         
         c.execute('INSERT INTO presidential(vin, choice) VALUES(?,?)',(vin, user_choice))
+        
+        con.commit()
+        con.close()
+        
+def database_governor(vin, user_choice):
+        con = sl.connect('Governorship.db')
+        c = con.cursor()
+        
+        c.execute('CREATE TABLE IF NOT EXISTS Governorship(vin text, choice text)')
+        
+        c.execute('INSERT INTO Governorship(vin, choice) VALUES(?,?)',(vin, user_choice))
+        
+        con.commit()
+        con.close()
+        
+def database_house_of_rep(vin, user_choice):
+        con = sl.connect('House_of_Rep.db')
+        c = con.cursor()
+        
+        c.execute('CREATE TABLE IF NOT EXISTS House_of_Rep(vin text, choice text)')
+        
+        c.execute('INSERT INTO House_of_Rep(vin, choice) VALUES(?,?)',(vin, user_choice))
         
         con.commit()
         con.close()
@@ -85,20 +107,20 @@ def component_widget_1():
         lbl_2.place(x=35, y=100)
 
 
-        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
-        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="LP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : button_click(butt_1,butt_2,butt_3,butt_4))
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.LANCZOS))
+        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="LP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_presidential(butt_1,butt_2,butt_3,butt_4))
         butt_1.place(x=90, y=140)
         
-        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
-        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="PDP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.LANCZOS))
+        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="PDP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_presidential(butt_1,butt_2,butt_3,butt_4))
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
-        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="APC", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.LANCZOS))
+        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="APC", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_presidential(butt_1,butt_2,butt_3,butt_4))
         butt_3.place(x=90, y=260)
         
-        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.ANTIALIAS))
-        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="NNPP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.LANCZOS))
+        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="NNPP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_presidential(butt_1,butt_2,butt_3,butt_4))
         butt_4.place(x=90, y=320)
 
 def disable(lp_btn, pdp_btn, apc_btn, nnpp_btn):
@@ -107,7 +129,8 @@ def disable(lp_btn, pdp_btn, apc_btn, nnpp_btn):
         apc_btn.configure(state= tk.DISABLED)
         nnpp_btn.configure(state= tk.DISABLED)
 
-def button_click(lp_btn, pdp_btn, apc_btn, nnpp_btn):
+# Button
+def initialize_presidential(lp_btn, pdp_btn, apc_btn, nnpp_btn):
         global entry_1
         user_value = entry_1.get()
         try:
@@ -119,27 +142,89 @@ def button_click(lp_btn, pdp_btn, apc_btn, nnpp_btn):
                 if vote_1 == "LP":
                         print(user_value)
                         print(vote_1)
-                        create_database(user_value, vote_1)
+                        database_president(user_value, vote_1)
                         disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
         
                 elif vote_2 == "PDP":
-                        create_database(user_value, vote_2)
+                        database_president(user_value, vote_2)
                         disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
         
                 elif vote_3 == "APC":
-                        create_database(user_value, vote_3)
+                        database_president(user_value, vote_3)
                         disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
         
                 elif vote_4 == "NNPP":
-                        create_database(user_value, vote_4)
+                        database_president(user_value, vote_4)
                         disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
                 
                 
-        except SyntaxError as e:
+        except Exception as e:
                 messagebox.showerror("Error","There was an error")
                 print(e)
 
+def initialize_governorship(lp_btn, pdp_btn, apc_btn, nnpp_btn):
+        global entry_1
+        user_value = entry_1.get()
+        try:
+                vote_1 = lp_btn.cget("text")
+                vote_2 = pdp_btn.cget("text")
+                vote_3 = apc_btn.cget("text")
+                vote_4 = nnpp_btn.cget("text")
+                
+                if vote_1 == "LP":
+                        print(user_value)
+                        print(vote_1)
+                        database_governor(user_value, vote_1)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_2 == "PDP":
+                        database_governor(user_value, vote_2)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_3 == "APC":
+                        database_governor(user_value, vote_3)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_4 == "NNPP":
+                        database_governor(user_value, vote_4)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+                
+                
+        except Exception as e:
+                messagebox.showerror("Error","There was an error")
+                print(e)
 
+def initialize_representative(lp_btn, pdp_btn, apc_btn, nnpp_btn):
+        global entry_1
+        user_value = entry_1.get()
+        try:
+                vote_1 = lp_btn.cget("text")
+                vote_2 = pdp_btn.cget("text")
+                vote_3 = apc_btn.cget("text")
+                vote_4 = nnpp_btn.cget("text")
+                
+                if vote_1 == "LP":
+                        print(user_value)
+                        print(vote_1)
+                        database_house_of_rep(user_value, vote_1)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_2 == "PDP":
+                        database_house_of_rep(user_value, vote_2)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_3 == "APC":
+                        database_house_of_rep(user_value, vote_3)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+        
+                elif vote_4 == "NNPP":
+                        database_house_of_rep(user_value, vote_4)
+                        disable(lp_btn, pdp_btn, apc_btn, nnpp_btn)
+                
+                
+        except Exception as e:
+                messagebox.showerror("Error","There was an error")
+                print(e)
 
 
 def component_widget_2():
@@ -150,21 +235,21 @@ def component_widget_2():
         lbl_3 = ctk.CTkLabel(master=frame1, text="GOVERNORSHIP PARTY", font=('Geometr415 Blk BT', 20))
         lbl_3.place(x=35, y=100)
 
-# defining our image and creating of buttons
-        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
-        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.LANCZOS))
+        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="LP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_governorship(butt_1,butt_2,butt_3,butt_4))
         butt_1.place(x=90, y=140)
 
-        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
-        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.LANCZOS))
+        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="PDP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_governorship(butt_1,butt_2,butt_3,butt_4))
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
-        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.LANCZOS))
+        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="APC", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_governorship(butt_1,butt_2,butt_3,butt_4))
         butt_3.place(x=90, y=260)
         
-        NNPP_Vote= ImageTk.PhotoImage(Image.open("nnpp.png").resize((60,60),Image.ANTIALIAS))
-        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.LANCZOS))
+        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="NNP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_governorship(butt_1,butt_2,butt_3,butt_4))
         butt_4.place(x=90, y=320)
 
 def component_widget_3():
@@ -176,23 +261,22 @@ def component_widget_3():
         lbl_4.place(x=52, y=80)
 
 # defining our image and creating of buttons
-        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.ANTIALIAS))
-        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        LP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\LP.png").resize((60,60),Image.LANCZOS))
+        butt_1= ctk.CTkButton(master=frame1, image= LP_Vote,text="LP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_representative(butt_1,butt_2,butt_3,butt_4))
         butt_1.place(x=90, y=140)
 
-        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.ANTIALIAS))
-        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        PDP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\PDP.png").resize((60,60),Image.LANCZOS))
+        butt_2= ctk.CTkButton(master=frame1, image= PDP_Vote,text="PDP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_representative(butt_1,butt_2,butt_3,butt_4))
         butt_2.place(x=90, y=200)
 
-        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.ANTIALIAS))
-        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        APC_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\APC.png").resize((60,60),Image.LANCZOS))
+        butt_3= ctk.CTkButton(master=frame1, image= APC_Vote,text="APC", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_representative(butt_1,butt_2,butt_3,butt_4))
         butt_3.place(x=90, y=260)
         
-        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.ANTIALIAS))
-        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="Vote", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E")
+        NNPP_Vote= ImageTk.PhotoImage(Image.open(r"C:\Users\Suleiman\Desktop\Strings\voting-app\nnpp.png").resize((60,60),Image.LANCZOS))
+        butt_4= ctk.CTkButton(master=frame1, image= NNPP_Vote,text="NNP", width=90,height=40,font=('Geometr415 Blk BT',20),bg_color="#000E0E",fg_color="#00787E",command=lambda : initialize_representative(butt_1,butt_2,butt_3,butt_4))
         butt_4.place(x=90, y=320)
 
- 
 
 if __name__=="__main__":
     root = ctk.CTk()
